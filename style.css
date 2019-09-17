@@ -1,0 +1,85 @@
+body {
+  width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 20px 20px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14pt;
+  color: #333;
+  line-height: 1.5;
+  hyphens: auto;
+  -ms-hyphens: auto;
+  padding-bottom: 50px;
+}
+
+h1 {
+  font-family: 'Noto Serif', cursive;
+  font-size: 32pt;
+  font-weight: 400;
+}
+
+h2 {
+  font-family: 'Noto Serif', cursive;
+  font-size: 20pt;
+  font-weight: 400;
+}
+
+h3 {
+  font-family: 'Noto Serif', cursive;
+  font-size: 16pt;
+  font-style: oblique;
+  font-weight: 400;
+  margin-bottom: -15px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color:  #f2f3f4;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #616a6b;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+}
+
+li a:hover {
+  color: black;
+}
+
+a {
+  color: #87CEEB;
+  text-decoration: none;
+}
+
+hr {
+  margin-top: -15px;
+  margin-bottom: 10px;
+  color: #f2f3f4;
+}
+
+table {
+  border: 1px solid black;
+  border-color: #616a6b;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+th {
+  font-weight: normal;
+  background-color: #f2f3f4;
+}
+
