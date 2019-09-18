@@ -10,6 +10,7 @@ body {
   hyphens: auto;
   -ms-hyphens: auto;
   padding-bottom: 50px;
+  overflow-y: scroll;
 }
 
 h1 {
@@ -32,7 +33,7 @@ h3 {
   margin-bottom: -15px;
 }
 
-ul {
+.navigation {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -40,11 +41,11 @@ ul {
   background-color:  #f2f3f4;
 }
 
-li {
+.navigation li {
   float: left;
 }
 
-li a {
+.navigation li a {
   display: block;
   color: #616a6b;
   text-align: center;
@@ -52,17 +53,30 @@ li a {
   text-decoration: none;
 }
 
-li a:hover {
+.navigation li a:hover {
   color: black;
 }
 
+.regular {
+  list-style: none; /* Remove default bullets */
+}
+
+.regular li::before {
+  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #333; /* Change the color */
+  font-weight: bold; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
 a {
-  color: #0072BB;
+  color: #42bbed;
   text-decoration: none;
 }
 
 a:hover {
-  color: #4a9ed4;
+  color: #87CEEB;
 }
 
 hr {
