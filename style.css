@@ -57,8 +57,12 @@ li a:hover {
 }
 
 a {
-  color: #87CEEB;
+  color: #0072BB;
   text-decoration: none;
+}
+
+a:hover {
+  color: #4a9ed4;
 }
 
 hr {
@@ -67,7 +71,15 @@ hr {
   color: #f2f3f4;
 }
 
-table {
+.cv, .cv tr, .cv th, .cv td {
+  border: none;
+}
+
+.cv td {
+  vertical-align:top
+}
+
+table.teaching {
   border: 1px solid black;
   border-color: #616a6b;
   border-collapse: collapse;
@@ -78,6 +90,7 @@ th, td {
   border: 1px solid #ddd;
   padding: 6px;
 }
+
 th {
   font-weight: normal;
   background-color: #f2f3f4;
