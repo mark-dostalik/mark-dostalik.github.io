@@ -4,7 +4,7 @@ body {
   padding: 0 20px 20px 20px;
   font-family: 'Noto Sans', sans-serif;
   font-weight: 500;
-  font-size: 14pt;
+  font-size: 13pt;
   color: #333;
   line-height: 1.5;
   hyphens: auto;
@@ -13,24 +13,27 @@ body {
   overflow-y: scroll;
 }
 
+p {
+  text-align: justify;
+}
+
 h1 {
   font-family: 'Noto Serif', cursive;
-  font-size: 32pt;
+  font-size: 24pt;
   font-weight: 400;
 }
 
 h2 {
   font-family: 'Noto Serif', cursive;
-  font-size: 20pt;
+  font-size: 18pt;
   font-weight: 400;
 }
 
 h3 {
-  font-family: 'Noto Serif', cursive;
-  font-size: 16pt;
-  font-style: oblique;
-  font-weight: 400;
-  margin-bottom: -15px;
+  font-family: 'Noto Serif' cursive;
+  font-size: 15pt;
+  font-weight: 500;
+  margin-bottom: -13px;
 }
 
 .navigation {
