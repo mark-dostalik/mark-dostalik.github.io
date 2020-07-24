@@ -44,16 +44,23 @@ h3 {
   background-color:  #f2f3f4;
 }
 
-.navigation li {
+.pull-left li {
   float: left;
 }
 
-.navigation li a {
-  display: block;
-  color: #616a6b;
+.pull-right li {
+  float: right;
+}
+
+.pull-left li, .pull-right li {
+  display: inline-block;
   text-align: center;
   padding: 12px;
   text-decoration: none;
+}
+
+.navigation li a {
+  color: #616a6b;
 }
 
 .navigation li a:hover {
