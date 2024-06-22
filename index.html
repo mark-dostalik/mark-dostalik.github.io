@@ -1,49 +1,82 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
     <head>
 
-        <meta charset="utf-8">
-        <title>Mark Dostalík | Home</title>
-        <link href="style.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="dist/css/lightbox.min.css">
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+        <script>
+            MathJax = {
+                tex: {
+                    tags: 'ams'
+                },
+            }
+        </script>
+
+        <title>Mark Dostalík</title>
 
     </head>
 
     <body>
-
-        <ul class="navigation">
-          <div class="pull-left">
-              <li>Home</li>
-              <li><a href="curriculum-vitae-en.html">Curriculum vitae</a></li>
-              <li><a href="teaching-en.html">Teaching <small>(in Czech)</small></a></li>
-          </div>
-          <div class="pull-right">
-              <li>en <a href="index-cs.html">cs</a></li>
-          </div>
-        </ul>
-
-        <h1>Mark Dostalík</h1>
-
-        <p><strong>Postdoc in <a href="https://www2.karlin.mff.cuni.cz/~allolio/" target="_blank">Biomembrane Remodeling Group</a></strong></p>
-
-        <p>Mathematical Institute of Charles University<br>
-        Faculty of Mathematics and Physics<br>
-        Charles University<br>
-        Sokolovská 83<br>
-        186 75 Prague, Czechia</p>
-
-        <p>e-mail: mark.dostalik@gmail.com<br>
-        phone: 00420 221 913 413</p>
-
-        <p>
-            identifiers: <a href="https://orcid.org/0000-0002-6622-6550" target="_blank">ORCID</a>,
-            <a href="https://publons.com/researcher/2035009/mark-dostalik/" target="_blank">ResearcherID</a>,
-            <a href="https://www.scopus.com/authid/detail.uri?authorId=57209274003" target="_blank">Scopus</a>
-        </p>
-
+        <div class="container">
+            <div class="sidebar">
+                <img class="profile-picture" src="content/profile.jpeg" alt="Mark Dostalík" width="150"/>
+                <h1><a href="#" onclick="loadContent('about-me.html', this)">Mark Dostalík</a></h1>
+                <p>Data Scientist at MSD
+                <div class="social-icons">
+                    <a href="mailto:mark.dostalik@gmail.com" target="_blank">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/mark-dostalik/" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://github.com/mark-dostalik" target="_blank">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="https://scholar.google.com/citations?user=vdxFwfcAAAAJ&hl=en" target="_blank">
+                        <i class="ai ai-google-scholar-square big-icon"></i>
+                    </a>
+                </div>
+                </p>
+                <ul>
+                    <li><a href="#about-me" onclick="loadContent('about-me.html', this)">About Me</a></li>
+                    <li><a href="https://www.overleaf.com/read/kqzncgpctvkp#2c1ba3" target="_blank">Curriculum Vitae</a></li>
+                    <li class="expandable">
+                        <a href="#" onclick="toggleSubmenu(event)">
+                            <span class="triangle">&#9661;</span> Personal Projects
+                        </a>
+                        <ul class="submenu" style="display: none;">
+                            <li>
+                                <a href="#advent-of-code" onclick="loadContent('advent-of-code.html', this)">
+                                    <span style="font-size: 0.93em">Advent of Code</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#lcr-game" onclick="loadContent('lcr-game.html', this)">
+                                    <span style="font-size: 0.93em">LCR Game</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#random-maze" onclick="loadContent('random-maze.html', this)">
+                                    <span style="font-size: 0.93em">Random Maze</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="main-content" id="mainContent"></div>
+            <script src="script.js"></script>
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            <script src="dist/js/lightbox-plus-jquery.js"></script>
+        </div>
     </body>
-
-
 </html>

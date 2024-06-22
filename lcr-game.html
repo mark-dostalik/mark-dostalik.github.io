@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>LCR game</title>
+</head>
+<body>
+        <div class="main-content" id="lcr-game">
+            <h2>LCR Game</h2>
+
+            <p>
+                The <a href="https://www.wikihow.com/Play-LCR" target="_blank">LCR game</a> is based purely on chance
+                and the only way one could potentially gain advantage lies in the seating order. Let us explore what is
+                the position in the rolling order that maximizes the probability of winning. Is it indeed the last
+                person that has the highest chance of winning, as one might guess initially?
+
+            </p>
+
+            <p>
+                Python code developed for solving this problem is available on my
+                <a href="https://github.com/mark-dostalik/lcr-game" target="_blank">GitHub</a>.
+            </p>
+
+            <h3>Rules</h3>
+            <p>Each player starts with 3 chips. The players are taking turns, counter-clockwise, rolling dice based
+                on the following rules:</p>
+             <ul>
+                 <li>Each turn throw \( \min(3, r) \) dice where \( r \) is the number of your chips.</li>
+                 <li>For each \( 1, 2, \) or \( 3 \) that appears, do nothing.</li>
+                 <li>For each \( 4 \) that appears, move one of your chips to the right.</li>
+                 <li>For each \( 5 \) that appears, move one of your chips to the left.</li>
+                 <li>For each \( 6 \) that appears, move one of your chips to the center.</li>
+             </ul>
+            <p>If a player doesn't have any chips, they don't lose the game but are simply skipped until they gain chips
+                again or the game is over. If, at any point, there is only one player owning chips, they win the game.</p>
+            <p>To demonstrate the rules on an example, consider the following dice roll:</p>
+            <div style="text-align: center">
+                <a href="content/example-dice-roll.png" data-lightbox="ex-dice-roll">
+                    <img src="content/example-dice-roll.png" alt="Example dice roll" width="150"/>
+                </a>
+            </div>
+            <p>This would lead to moving 1 chip to the center (the 6), moving 1 chip to the right (the 4), and keeping
+                the remaining chips (the 1).</p>
+
+            <h4>Generalization</h4>
+
+            <p>
+            In the following, we consider a generalization of the LCR game in the sense that the number of players
+            \( n \) can be any integer greater than 2, the number of chips \( c \) that each player starts with can be
+            any integer greater than 1, and the probabilities \( p_{\mathrm{r}} \), \( p_{\mathrm{l}} \),
+            \( p_{\mathrm{c}} \), and \( p_{\mathrm{k}} \), corresponding to the actions of moving one of your chips
+            to the right, left, center, or keeping the chips, respectively, are from the interval \( [0, 1] \) that
+            sum up to 1.
+            </p>
+
+            <p>
+            Note that in the original game \( c = 3 \),
+            \( p_{\mathrm{r}} = p_{\mathrm{l}} = p_{\mathrm{c}} = \frac{1}{6} \),
+            and \( p_{\mathrm{k}} = \frac{1}{2} \).
+            </p>
+
+            <h3>Absorbing Markov chain</h3>
+
+            <p>
+                Since this game is based entirely on chance (there is no strategy involved at all), it can be modeled by
+                an <a href="https://en.wikipedia.org/wiki/Absorbing_Markov_chain" target="_blank">absorbing Markov chain</a>.
+                In particular, each non-winning chip distribution among the players along with the currently active
+                player is considered to be a transient state, while the absorbing states correspond to the situations
+                when one of the players wins the game.
+            </p>
+
+            <p>For instance, in a 3-player game, this is one of the possible transient states:</p>
+
+            <div style="text-align: center">
+                <a href="content/example-game-state.png" data-lightbox="ex-game-state">
+                    <img src="content/example-game-state.png" alt="Example game state" width="300"/>
+                </a>
+            </div>
+
+            <h4>Number of transient states</h4>
+
+            <p>
+                The number \( t \) of transient states in an \( n \)-player game with \( c \) starting chips
+                for each player, is given by the formula</p>
+            <p>
+                \begin{equation}
+                \label{eq:t}
+                t = \sum_{k=0}^{n-2} (n - k) {n \choose k} {n c \choose n - k}.
+                \end{equation}
+            </p>
+            <p>Indeed, in a transient state there can be upto \( k = n - 2 \) players without any chips which can be
+            chosen in \( {n \choose k} \) number of ways. All chips are then distributed among the remaining players
+            and the pot in \( {nc \choose n - k} \) number of ways. This is the number of integer solutions to
+            the equation
+            \[
+                p_1 + p_2 + \dots p_{n - k} + q = nc,
+            \]
+            where \( p_i > 0 \) for \( i \in \{ 1, \dots, n - k \} \) and \( q \ge 0 \). (Here, the symbols \( p_i \)
+            represent the players and \( q \) represents the pot.) Finally, the currently active player can be chosen
+            among the players with chips in \( n - k \) number of ways.
+            </p>
+
+            <p>
+            For instance, in a 5-player game where each player initially has 4 chips, there are 212,420
+            transient states in total. (And 5 absorbing states, of course.)
+            </p>
+
+            <h4>Transition matrix</h4>
+
+            <p>
+                In an absorbing Markov chain with \( t \) transient states and \( n \) absorbing states, the transition
+                matrix reads
+                \[
+                    P
+                    =
+                   \begin{bmatrix}
+                    Q & R \\
+                    0 & I_n
+                    \end{bmatrix},
+                \]
+                where \( Q \in \mathbb{R}^{t \times t} \), \( R \in \mathbb{R}^{t \times n} \),
+                and \( I_n \in \mathbb{R}^{n \times n} \) is the identity matrix. Thus, \( Q \) describes
+                the probability of transitioning from some transient state to another while \( R \) describes
+                the probability of transitioning from some transient state to some absorbing state.
+            </p>
+
+            <p>
+                In each transient state, the active player has \( r \) chips and the number of possible distinct dice
+                rolls is given by
+                \[
+                    m(r) = {\min(c, r) + 3 \choose 3}.
+                \]
+                For instance, if \( c = 3 \) and \( r = 3 \), there are 20 different throws that can occur. In other
+                words, in each row of \( P \) there are <em>at most</em> \( m(r) \) non-zero elements. (Indeed,
+                multiple throws can lead to someone winning the game.)
+            </p>
+
+            <p>
+                Given \(r\), the probability of throwing a roll such that \( n_{\mathrm{r}} \) dice show the action of
+                moving one of your chips to the right, \( n_{\mathrm{l}} \) dice show the action of moving one of your
+                chips to the left, \( n_{\mathrm{c}} \) dice show the action of moving one of your chips to the center,
+                and \( n_{\mathrm{k}} \) dice show the action of keeping your chips, is given by
+                \[
+                    p(n_{\mathrm{r}}, n_{\mathrm{l}}, n_{\mathrm{c}}, n_{\mathrm{k}})
+                    =
+                    \frac{\min(c, r)!}{n_{\mathrm{r}}! \, n_{\mathrm{l}}! \, n_{\mathrm{c}}! \, n_{\mathrm{k}}!}
+                    p_{\mathrm{r}}^{n_{\mathrm{r}}} \, p_{\mathrm{l}}^{n_{\mathrm{l}}} \,
+                    p_{\mathrm{c}}^{n_{\mathrm{c}}} \, p_{\mathrm{k}}^{n_{\mathrm{k}}}.
+                \]
+                For instance, if \( c = 3 \), \( r = 3 \), and the action probabilities are as in the original game,
+                the probability of throwing \(\mathrm{center}\), \(\mathrm{left}\), and \(\mathrm{keep}\) is
+                \( \frac{1}{12} \). This way, the rows of \( P \) can be populated with values corresponding to
+                the transition probabilities between the individual game states.
+
+            </p>
+            <p>
+                To demonstrate the sparsity of the transition matrix, the non-zero elements of \( P \) are displayed
+                below for a 4-player game with \( c = 3 \).
+            </p>
+
+            <div style="text-align: center">
+                <a href="content/spy.png" data-lightbox="spy">
+                    <img src="content/spy.png" alt="Sparse transition matrix" width="250"/>
+                </a>
+            </div>
+
+            <p>
+                (In this case, \( P \in \mathbb{R}^{5416 \times 5416} \) since \( n = 4 \) and \( t = 5412\), as can be
+                verified by \eqref{eq:t}.)
+            </p>
+
+            <h4>Absorbing probabilities</h4>
+
+            <p>
+                The absorbing probabilities \( \pi \) are given by the formula
+                \[
+                    \pi
+                    =
+                    \pi_0
+                    \,
+                    (I_t - Q)^{-1} R,
+                \]
+                where \( \pi_0 \) is a length-\(t\) row vector whose entries are all 0 except for the index which
+                corresponds to the initial game state (i.e. each player has \( c \) chips and the starting player is
+                the active player) where it is equal to 1. The absorbing probabilities \( \pi \) is a length-\(n\) row
+                vector whose entries correspond to the probabilities of winning for each player (the first entry
+                corresponds to the probability of winning of the first player, the second entry to the probability of
+                winning of the second player, and so on).
+            </p>
+
+            <p>
+                Of course, the absorbing probabilities are not computed via inverting the matrix \( I_t - Q \) but
+                rather by solving
+                \begin{equation}
+                \label{eq:me}
+                (I_t - Q)^{\top} \eta = \pi_0^{\top},
+                \end{equation}
+                for the length-\(t\) column vector \(\eta\). The absorbing probabilities are then given by
+                \[
+                \pi = \eta^{\top} R.
+                \]
+                Given the sparsity of \( Q \), we use <code>scipy.sparse</code> module for solving \eqref{eq:me}.
+            </p>
+
+            <p>
+                The resulting absorbing probabilities, i.e. probabilities of winning for each player, are given below
+                for the case \( c = 3 \) and original game action probabilities. (Having \( Q \) at our disposal it is
+                also possible to obtain the expected number of steps before being absorbed, as well as the variance
+                on number of steps before being absorbed; see
+                <a href="https://en.wikipedia.org/wiki/Absorbing_Markov_chain" target="_blank">absorbing Markov chain</a>
+                for details.)
+            </p>
+
+            <div style="text-align: center">
+                <a href="content/markov-chain-solutions.png" data-lightbox="mc-sol">
+                    <img src="content/markov-chain-solutions.png" alt="Markov chain solutions" width="600"/>
+                </a>
+            </div>
+
+            <p>
+                Note that it is not true that the last player always has the highest chance of winning. In particular,
+                in the 5-, 6-, and 7-player games, it is in fact the second-to-last player that has the highest
+                probability of winning.
+            </p>
+
+            <p>
+                From the table above, it can also be seen that the execution time grows rapidly as the number of players
+                increases. This basically prevents us from obtaining exact probabilities of winning for larger numbers
+                of players. To get an estimate of these we must turn to game simulations.
+            </p>
+
+            <h3>Game simulation</h3>
+
+            <p>
+                Since solving for exact probabilities of winning for larger values of \( n \) is intractable, we
+                ran 100,000 random games to get proportions of winnings for each player. The results are
+                displayed below.
+            </p>
+
+            <div style="text-align: center">
+                <a href="content/simulation-solutions.png" data-lightbox="sim-sol">
+                    <img src="content/simulation-solutions.png" alt="Simulation solutions" width="600"/>
+                </a>
+            </div>
+
+            <p>
+                Note that as \( n \) increases the player that has the highest chance of winning shifts from the last
+                position to second-to-last, third-to-last, or fourth-to-last. Similar, but opposite, trend can be seen
+                for the player that has the least chance of winning. In general, one could say that it is preferable
+                being in the second half of the rolling order to increase the chances of winning.
+            </p>
+
+        </div>
+
+</body>
+</html>
