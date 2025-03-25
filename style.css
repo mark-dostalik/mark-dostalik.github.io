@@ -8,6 +8,7 @@ body {
     justify-content: center;
 }
 
+/* Default styles for larger screens */
 .container {
     display: flex;
     width: 57%;
@@ -28,6 +29,34 @@ body {
     /*border-right: 1px solid #ccc;*/
     box-sizing: border-box;
     /*box-shadow: 0px 0px 50px 50px #f6f6f6;*/
+}
+
+.main-content {
+    flex: 1 1 auto;
+    text-align: justify;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Stack the sidebar and main content vertically */
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .sidebar {
+        width: 100%; /* Make the sidebar take up full width on smaller screens */
+        margin-top: 20px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
 }
 
 .sidebar .profile-picture {
@@ -106,15 +135,6 @@ body {
 
 .triangle.open {
     transform: rotate(180deg);
-}
-
-.main-content {
-    flex: 1 1 auto;
-    text-align: justify;
-    padding: 10px;
-    box-sizing: border-box;
-    margin-left: 10px;
-    margin-bottom: 15px;
 }
 
 .main-content section {
