@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>LCR game</title>
+    <style>
+        hr {
+            border: 0;
+            border-top: 1px solid #999999; /* Adjust the thickness and color */
+            margin: 20px 0; /* Optional: Add some space above and below the line */
+        }
+    </style>
+    <style>
+        ol {
+            counter-reset: list;
+        }
+        ol li {
+            margin-bottom: 6px; /* Space between each list item */
+            /*padding-left: 5px; !* Optional, adjust padding if needed *!*/
+        }
+        .ref_ol ol > li {
+            list-style: none;
+        }
+        .ref_ol ol > li:before {
+            content: " [" counter(list) "] ";
+            counter-increment: list;
+            width: 1em;
+            position: absolute;
+            text-align: center;
+            margin-left: -1.5em;
+        }
+    </style>
+</head>
+<body>
+<div class="main-content" id="set-game">
+    <h2>SET Game</h2>
+
+    <p>
+        Inspired by the <a href="https://henrikwarne.com/2011/09/30/set-probabilities-revisited/" target="_blank">blog
+        post</a> of Henrik Warne, I set out to implement yet another Monte Carlo simulation of the classic card game <a
+        href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">SET&#174;</a>, this time in Python. I ran
+        <b>1 billion</b> game simulations to confirm Warne's findings. Full Python solution is available on my <a
+        href="https://github.com/mark-dostalik/set-game" target="_blank">GitHub</a>.
+    </p>
+
+    <h3>Rules</h3>
+    <p>
+        The game of SET is played with a deck of 81 cards. Each card is unique with respect to four card
+        features: <b>number</b> of shapes (one, two, three), <b>shape</b> (diamond, squiggle, oval),
+        <b>shading</b> (solid, striped, open), and <b>color</b> (red, green, purple). A combination of three
+        cards in which each of the four features have either all the same value or have all different values
+        is called a SET.
+    </p>
+
+    <p>
+        The game starts with 12 cards being laid out face up from the shuffled deck. Players then
+        simultaneously look for SETs in the dealt cards. When a SET is found, the three cards are removed
+        and replaced by three more from the deck. If at any point there is no SET among the dealt cards,
+        three more cards are added. The game ends when there are no more SETs to be found in the dealt
+        cards.
+    </p>
+
+    <p>
+        For instance, this is what the initial 12-card layout may look like:
+    <div class="grid-container-12">
+        <div class="grid-item">
+            <img src="content/set-game/cards/1HrD.svg" alt="1HrD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/3HpP.svg" alt="1OgP">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/1HgP.svg" alt="1HgP">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2OgD.svg" alt="2OgD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2HgP.svg" alt="2OpD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2OpP.svg" alt="2OpP">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2OrS.svg" alt="20rS">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/3SrS.svg" alt="3SrS">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2SrD.svg" alt="2SrD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/3OgD.svg" alt="3OgD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/3SgS.svg" alt="3SgS">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2SpD.svg" alt="2SpD">
+        </div>
+    </div>
+    There are multiple sets in this layout, one of them being:
+    <div class="grid-container-3">
+        <div class="grid-item">
+            <img src="content/set-game/cards/2OrS.svg" alt="20rS">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2SpD.svg" alt="2SpD">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2HgP.svg" alt="2HgP">
+        </div>
+    </div>
+    These cards indeed form a SET since all three cards have the same <b>number</b> of symbols, different
+    <b>colors</b>, different <b>shapes</b>, and different <b>shadings</b>.
+    </p>
+
+    <p>
+        On the other hand, the following triplet of cards <i>does not</i> form a SET since the <b>shapes</b>
+        of the symbols are neither all the same nor different:
+    <div class="grid-container-3">
+        <div class="grid-item">
+            <img src="content/set-game/cards/1HrD.svg" alt="1HgP">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/2HgP.svg" alt="2HgP">
+        </div>
+        <div class="grid-item">
+            <img src="content/set-game/cards/3HpP.svg" alt="1OgP">
+        </div>
+    </div>
+    </p>
+
+    <h3>Monte Carlo simulation</h3>
+
+    <p>
+        While playing the game of SET many questions arise that are inherently mathematical. To state the most famous
+        one – what is the largest <a href="https://en.wikipedia.org/wiki/Cap_set" target="_blank">cap SET</a> possible
+        (cap SET is a layout of cards in which no SET can be found)? The answer to this question is 20 as was
+        analytically proved in [<a href="#ref1">1</a>] (somewhat surprisingly, even before the game came to existence).
+    </p>
+
+    <p>
+        The <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">wiki page</a> of the game SET
+        contains many facts on the combinatorial properties of the game but the most comprehensive mathematical
+        exploration of the game can be found in [<a href="#ref2">2</a>]. Yet, some questions cannot be answered
+        analytically and require computer simulations. My goal was to answer the following questions:
+    </p>
+    <p>
+    <ol>
+        <li>
+            What is the probability that there is no SET in the dealt cards during the game?
+        </li>
+        <li>
+            What is the mean and variance of the number of SETs in the dealt cards during the game?
+        </li>
+        <li>
+            What is the probability that no cards are left uncollected at the end of the game?
+        </li>
+        <li>
+            What is the probability that there are no more than 12 cards dealt during the game?
+        </li>
+    </ol>
+    </p>
+    <p>
+        I use the word <em>probability</em> in a loose sense here and onwards. Of course, in Monte Carlo simulations we
+        are only sampling from the true probability distributions and relying on the law of large numbers. The term
+        "probability" is hence used in this approximative sense in the rest of this post.
+    </p>
+
+    <p>
+        In total, I ran <b>1 billion</b> game simulations. The code is parallelized and ran for about 13 hours on my
+        10-core M1 chip.
+    </p>
+
+    <h4>SET selection method</h4>
+
+    <p>
+        To emulate the real game as much as possible I decided to implement the following approach for choosing
+        SETs from dealt cards. Each SET is assigned a "similarity" score which is the number of features that
+        have the three cards forming the SET in common plus one (to ensure positivity).
+    </p>
+
+    <p>
+        For instance, the cards forming the SET from the previous section only share the same number of
+        shapes and thus, its "similarity" score would be 1 + 1 = 2. The "similarity" scores range from 1
+        (all features are different) to 4 (only one feature is different). Note that it is not possible for
+        all four features to be the same since then the three cards would be identical (and each card in the
+        deck is unique).
+    </p>
+
+    <p>
+        The "similarity" scores are then used as weights in the random selection of a SET from the dealt cards. This
+        method is based on the (speculative) assumption that human players are more likely to spot SETs having more
+        features in common.
+    </p>
+
+    <p>
+        Of course, in real world, human mistakes take place – players are unable to find a SET in dealt cards
+        when there is one, players incorrectly collect three cards that do not form a SET, etc. My simulation falls
+        short of taking into account these errors and assumes players that play "perfectly".
+    </p>
+
+    <h4>Aggregate statistics</h4>
+
+    <p>
+        The probability of no SET occurring among the dealt cards as game progresses is shown below. The plot is
+        <b>interactive</b> – I encourage you to isolate individual traces by double-clicking the corresponding legend
+        item. Total <b>number of occurrences</b> out of the 1 billion game simulations for each point in the graph is
+        also available on hover.
+    </p>
+
+    <p>
+        The probability of a cap SET in the initial 12-card layout is around 3.2% but rises up to ~7% near the end of
+        the game. For 15-card layouts, the probabilities change non-monotonically but are bounded between 1% and 1.2%.
+        For 18-card layouts, the probabilities become almost negligible and for 21-card layouts probability of not
+        finding a SET is zero in all game states, as expected. Note that with respect to the total 1 billion game
+        simulations, there are few occurrences of the cases where 18, let alone 21, cards were dealt.
+    </p>
+
+
+    <iframe src="content/set-game/plots/prob_no_set.html" width="100%" height="550px" frameborder="0"></iframe>
+
+    <p>
+        Similarly, average number of SETs that can be found among the dealt cards for all possible game states is shown
+        in the interactive plot below. In addition to the mean, <b>variance</b> of the number of SETs in the dealt cards
+        is available on hover.
+    </p>
+
+    <p>
+        Interestingly, while average number of SETs in 12-card layouts diminishes as game progresses, average numbers of
+        SETs in 15-card and 18-card layouts exhibit non-monotonic trend, peaking shortly after the game starts. For each
+        of the 21-card layouts, we only have tens of observations so the average numbers of SETs found in these layouts
+        is hardly representative.
+    </p>
+
+    <iframe src="content/set-game/plots/num_sets_mean.html" width="100%" height="550px" frameborder="0"></iframe>
+
+    <p>
+        Note that the states where fewer than 12 cards are dealt are deliberately left out of the plots since these
+        cases occur at the end of the game only (when there are no more cards in the deck). Statistics for
+        fewer-than-12-cards-dealt situations are recorded in the table below.
+    </p>
+
+    <table>
+        <caption>end-of-game statistics</caption>
+        <thead>
+        <tr>
+            <th># dealt cards</th>
+            <th>probability of no SET</th>
+            <th>mean of # SETs</th>
+            <th>variance of # SETs</th>
+            <th># occurrences</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>3</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>12,200,055</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>0.975</td>
+            <td>0.051</td>
+            <td>0.099</td>
+            <td>480,221,638</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>0.481</td>
+            <td>0.668</td>
+            <td>0.581</td>
+            <td>925,506,439</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Another statistic of interest is the probability of playing a "perfect" game, i.e. of finishing the game with 27
+        SETs collected by players. This is equivalent to the situation where no cards remain on the table at the end of
+        the game.
+    </p>
+    <p>
+        More generally, we can ask what the probability of \( 3k \) cards remaining on the table at the end of the game
+        is. Note that since the maximum cap set size is 20, there can be at most 18 cards left at the end of the game
+        and hence \( 0 \le k \le 6 \). Moreover, one can easily prove that if there are only three cards dealt, these
+        cards <em>must</em> form a SET (this is also supported by the end-of-game statistics table above). Hence, it is
+        not possible for a game of SET to end with 3 cards remaining on the table.
+    </p>
+
+    <p>
+        Finally, if \( n \) is the number of cards remaining on table at the end of the game then there have been \( 27
+        - n \) SETs collected in total. Using this fact we can relate the probability of \( n \) cards remaining at the
+        end of the game with the probability of having collected \( 27 - n \) SETs in total which explains the double
+        x-axis in the plot below. We can see that only about 1% of the games are "perfect" while more than 91% of the
+        games end with 6 or 9 cards left on the table.
+    </p>
+
+    <iframe src="content/set-game/plots/num_found_sets.html" width="100%" height="500px" frameborder="0"></iframe>
+
+    <p>
+        How often is it necessary to deal more than 12 cards throughout the game? It turns out that around 31% of the
+        games never need to deal 15 cards as the plot below captures. Moreover, more than 98% of the games never need to
+        deal 18 cards. (My wife and I dealt 18 cards several times during our first game of SET so this must have been
+        due to our poor skills at finding SETs at that time.)
+    </p>
+
+    <iframe src="content/set-game/plots/max_num_dealt.html" width="100%" height="475px" frameborder="0"></iframe>
+
+    <h4>Conclusion</h4>
+    <p>
+        My aggregate simulation statistics very closely match the results stated in Henrik Warne's blog post (as well as
+        the computer simulation results found in [<a href="#ref2">2</a>]). Having been able to simulate more games, my
+        results include additional statistics for the game states that have more than 15 cards dealt. In addition,
+        variances of the number of SETs in dealt cards are included.
+    </p>
+
+    <hr>
+
+    <h3>References</h3>
+    <div class="ref_ol">
+        <ol>
+            <li id="ref1">
+                Pellegrino S., <em>Sul massimo ordine delle calotte in \( S_{4, 3} \)</em>. Matematiche, 25 (1971).
+            </li>
+            <li id="ref2">
+                McMahon L., Gordon G., Gordon H., and Gordon R. <em>The Joy of SET</em>. Princeton
+                University Press (2016).
+            </li>
+        </ol>
+    </div>
+</div>
+
+</body>
+</html>

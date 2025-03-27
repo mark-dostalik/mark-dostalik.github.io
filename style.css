@@ -198,3 +198,92 @@ h1 a:hover {
     color: #777;
     margin-top: -8px;
 }
+
+.grid-container-12 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, 1fr); /* 4 rows */
+    gap: 8px; /* Space between items */
+    padding: 10px;
+    width: 80%; /* Control the overall width of the grid */
+    margin: 0 auto; /* Center the grid horizontally */
+}
+
+.grid-container-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(1, 1fr); /* 4 rows */
+    gap: 8px; /* Space between items */
+    padding: 20px;
+    width: 70%; /* Control the overall width of the grid */
+    margin: 0 auto; /* Center the grid horizontally */
+}
+
+.grid-item img {
+    width: 100%; /* Make the images fill their container */
+    height: auto; /* Keep the image's aspect ratio */
+}
+
+table {
+    width: 100%;
+    margin: 35px auto;
+    border-collapse: collapse;
+    border-bottom: 0.1px solid black; /* Thin border at the bottom of the table */
+}
+
+caption {
+    text-align: center;
+    font-size: 1em;
+    font-weight: 300;
+    margin-bottom: 15px;
+    margin-top: -5px;
+}
+
+caption::after {
+    content: "";
+    display: block;
+}
+
+th, td {
+    padding: 4px;
+    text-align: center;
+}
+
+th {
+    font-weight: 300; /* No bold text in header */
+}
+
+/* Double line above the header */
+thead {
+    position: relative;
+}
+
+thead::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -3px; /* Adjust this to control the spacing from the caption */
+    left: 0;
+    width: 100%;
+    border-top: 0.1px solid black;  /* First thin line */
+}
+
+/* Thin horizontal line only below the header */
+thead th {
+    border-top: 0.1px solid black;
+    border-bottom: 0.1px solid black; /* Thin border under the header */
+}
+
+/* Thin horizontal line only at the bottom of the table */
+table {
+}
+
+td {
+    background-color: #ffffff;
+}
+
+/* Remove vertical borders */
+td, th {
+    border-left: none;
+    border-right: none;
+}
